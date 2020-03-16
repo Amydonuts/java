@@ -58,6 +58,7 @@ class StagServer
             }
             controller.separateCommand(line);
             out.write("You said... " + line + "\n"+controller.getResult());
+            System.out.println("You said... " + line + "\n"+controller.getResult());
         }
         catch(IOException | SubjectDoesNotExistException | NoValidCommandException ioe) {
             System.err.println(ioe);

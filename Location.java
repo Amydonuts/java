@@ -3,7 +3,6 @@ import com.alexmerz.graphviz.objects.*;
 import java.util.ArrayList;
 
 public class Location {
-    private String id;
     private String name;
     private ArrayList<String> paths;
     private ArrayList<Character> characters;
@@ -16,7 +15,7 @@ public class Location {
         this.characters = new ArrayList<Character>();
         ArrayList<Node> nodesLoc = g.getNodes(false);
         Node nLoc = nodesLoc.get(0);
-        this.id = g.getId().getId();
+        String id = g.getId().getId();
         this.name = nLoc.getId().getId();
         ArrayList<Graph> subGraphs2 = g.getSubgraphs();
         for (Graph g2 : subGraphs2) {
@@ -175,5 +174,8 @@ public class Location {
     }
     public void addPath(String path){
         paths.add(path);
+    }
+    public void addFurniture(Furniture f){
+        furniture.add(f);
     }
 }

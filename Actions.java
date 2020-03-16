@@ -95,15 +95,16 @@ public class Actions {
                 location.addPath(production);
             }
             else if(production.equals("health")){
-                if(player.getHealthLevel()<3) {
-                    player.plusHealth();
-                }
-                else{
-                    narration = narration+"\nYou already get the max health level!";
-                }
+                player.plusHealth();
             }
-            else {
-                location.addArtefact(new Artefact(production));
+            else if(entity.artefactExist(production)){
+                location.addArtefact(entity.getArtefact(production));
+            }
+            else if(entity.furnitureExist(production)){
+                location.addFurniture(entity.getFurniture(production));
+            }
+            else if(entity.characterExist(production)){
+                location.addCharacter(entity.getCharacter(production));
             }
         }
     }

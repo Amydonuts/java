@@ -36,6 +36,30 @@ public class Entity {
         }
         return null;
     }
+    public Artefact getArtefact(String name){
+        for (Artefact artefact : artefacts) {
+            if (artefact.getName().equals(name)) {
+                return artefact;
+            }
+        }
+        return null;
+    }
+    public Furniture getFurniture(String name){
+        for (Furniture furniture1 : furniture) {
+            if (furniture1.getName().equals(name)) {
+                return furniture1;
+            }
+        }
+        return null;
+    }
+    public Character getCharacter(String name){
+        for (Character character : characters) {
+            if (character.getName().equals(name)) {
+                return character;
+            }
+        }
+        return null;
+    }
     public Player getPlayer(String name){
         for (Player player : players) {
             if (player.getName().equals(name)) {

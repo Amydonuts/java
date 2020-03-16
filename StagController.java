@@ -16,7 +16,6 @@ public class StagController {
         Location location = this.entity.getFirstLocation();
         location.addCharacter(currentPlayer);
         this.entity.setCurrentLocation(location);
-
     }
 
     public void separateCommand(String command) throws SubjectDoesNotExistException, NoValidCommandException {
@@ -39,6 +38,62 @@ public class StagController {
         return false;
     }
 
+    public void gotoLocation(String[] commands){
+        Location location = entity.getCurrentLocation();
+        ArrayList<String> paths= location.getPaths();
+        for(String path:paths){
+            if(hasCommand(path,commands)){
+                location.deleteCharacter(currentPlayer);
+                Location l = entity.getLocation(path);
+                entity.setCurrentLocation(l);
+                l.addCharacter(currentPlayer);
+                result = "You go to the "+l.getName()+"\n";
+            }
+        }
+    }
+
+    public void getArtefact(String[] commands){
+        Location location = entity.getCurrentLocation();
+        ArrayList<String> artefactsNames = location.getAllArtefactsName();
+        for(String name:artefactsNames) {
+            if (hasCommand(name, commands)) {
+                currentPlayer.addArtefact(location.getArtefact(name));
+                location.deleteArtefact(location.getArtefact(name));
+                result = "You get the "+name;
+            }
+        }
+    }
+
+    public void dropAretefact(String[] commands){
+        Location location = entity.getCurrentLocation();
+        ArrayList<String> artefactsNames = currentPlayer.getAllArtefactsName();
+        for(String name:artefactsNames) {
+            if (hasCommand(name, commands)) {
+                location.addArtefact(currentPlayer.getArtefact(name));
+                currentPlayer.deleteArtefact(currentPlayer.getArtefact(name));
+                result = "You drop the "+name;
+            }
+        }
+    }
+
+    public void lookEntitiesInLocation(){
+        Location location = entity.getCurrentLocation();
+        String loc = "location name: "+location.getName()+"\n";
+        ArrayList<String> characterNames = location.getAllCharactersName();
+        ArrayList<String> artefactNames = location.getAllArtefactsName();
+        ArrayList<String> furnitureNames = location.getAllFurnitureName();
+        ArrayList<String> pathNames = location.getPaths();
+        result = loc+"characters: "+characterNames+"\nartefacts: "+artefactNames+"\nfurniture: "+furnitureNames+"\npaths: "+pathNames+"\n";
+    }
+
+    public void listArtefactsPlayerHave(){
+        String playerName = "player name: "+currentPlayer.getName()+"\n";
+        ArrayList<String> artefactNames = currentPlayer.getAllArtefactsName();
+        result = playerName+"artefacts: "+artefactNames+"\n";
+    }
+
+
+
     public void handleCommands(String[] commands) throws SubjectDoesNotExistException{
         Location location = entity.getCurrentLocation();
         result="";
@@ -49,48 +104,22 @@ public class StagController {
                 result = action.getNarration();
             }
         }
-        if(commands[0].equals("goto")){
-            ArrayList<String> paths= location.getPaths();
-            for(String path:paths){
-                if(hasCommand(path,commands)){
-                    location.deleteCharacter(currentPlayer);
-                    Location l = entity.getLocation(path);
-                    entity.setCurrentLocation(l);
-                    l.addCharacter(currentPlayer);
-                    result = "You go to the "+l.getName()+"\n";
-                }
-            }
+        if(hasCommand("goto",commands)){
+            gotoLocation(commands);
         }
-        if(commands[0].equals("get")){
-            ArrayList<String> artefactsNames = location.getAllArtefactsName();
-            for(String name:artefactsNames) {
-                if (hasCommand(name, commands)) {
-                    currentPlayer.addArtefact(location.getArtefact(name));
-                    location.deleteArtefact(location.getArtefact(name));
-                    result = "You get the "+name;
-                }
-            }
+        if(hasCommand("get",commands)){
+            getArtefact(commands);
         }
-        if(commands[0].equals("look")){
-            String loc = "location name: "+location.getName()+"\n";
-            ArrayList<String> characterNames = location.getAllCharactersName();
-            ArrayList<String> artefactNames = location.getAllArtefactsName();
-            ArrayList<String> furnitureNames = location.getAllFurnitureName();
-            ArrayList<String> pathNames = location.getPaths();
-            result = loc+"characters: "+characterNames+"\nartefacts: "+artefactNames+"\nfurniture: "+furnitureNames+"\npaths: "+pathNames+"\n";
+        if(hasCommand("drop",commands)){
+            dropAretefact(commands);
         }
-        if(commands[0].equals("inventory")){
-            String playerName = "player name: "+currentPlayer.getName()+"\n";
-            ArrayList<String> artefactNames = currentPlayer.getAllArtefactsName();
-            result = playerName+"artefacts: "+artefactNames+"\n";
+        if(commands.length==1&&commands[0].equals("look")){
+            lookEntitiesInLocation();
         }
-        if(commands[0].equals("drop")){
-            ArrayList<Artefact> artefacts = currentPlayer.getAllArtefacts();
-            location.addArtefact(artefacts);
-            currentPlayer.deleteAllArtefact();
-            result = "You drop all the artefacts";
+        if(commands.length==1&&(commands[0].equals("inventory")||commands[0].equals("inv"))){
+            listArtefactsPlayerHave();
         }
-        if(commands[0].equals("health")){
+        if(commands.length==1&&commands[0].equals("health")){
             result = currentPlayer.getName()+"'s health level: "+ currentPlayer.getHealthLevel();
         }
 
